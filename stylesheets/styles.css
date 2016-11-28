@@ -326,7 +326,7 @@ footer {
 .myClass{
   height: 250px;
   width: 250px;
-  border-radius: 6%;
+  border-radius: 4%;
 }
 
 
@@ -359,6 +359,11 @@ fill: currentColor;
 
 .djamel{
   line-height:5px;
+}
+
+SPAN.li  {
+  display: list-item; 
+  margin-left: 2em
 }
 
 
