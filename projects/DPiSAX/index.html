@@ -15,6 +15,7 @@
       
         <a href="https://github.com/djamelinfo/PDiSAX" class="btn">Paper</a>
         <a href="https://github.com/djamelinfo/PDiSAX" class="btn">Source Code</a>
+        <a href="https://github.com/djamelinfo/PDiSAX/zipball/master" class="btn">Download .zip</a>
         
       
       
@@ -22,16 +23,53 @@
 
     <section class="main-content">
       
-<h1 id="distributed-partitioned-isax">DPiSAX: Massively Distributed Partitioned iSAX</h1>
-<p>Distributed Partitioned iSAX for Time Series Indexing in Massively Distributed Environments.</p>
+<h1 id="overview">Overview</h1>
+<p>This page comes with the paper about <em>DPiSAX: Massively Distributed Partitioned iSAX</em>. It gives links to the code and documentation of:</p>
+
+<ul>
+  <li>DPiSAX, DbasicPiSAX and DiSAX.</li>
+  <li><a href="https://github.com/djamelinfo/iSAX2-">iSAX2+</a> : Java implementation of iSAX2+ <a href="http://www.mi.parisdescartes.fr/%7Ethemisp/isax2plus/">[1]</a>.</li>
+</ul>
+
+<h1 id="instructions">Instructions</h1>
+<p>You may freely use this code for research purposes, provided that you properly acknowledge the authors.</p>
 
 <h2 id="requirements">Requirements</h2>
 
-<p>Distributed Partitioned iSAX works with <a href="http://spark.apache.org/">Apache Spark</a>. In order to run DPiSAX you must download and install <a href="http://spark.apache.org/news/spark-1-6-2-released.html">Apache Spark 1.6.2</a>.</p>
+<p>Massively Distributed Partitioned iSAX works with <a href="http://spark.apache.org/">Apache Spark</a>. In order to run DPiSAX you must download and install <a href="http://spark.apache.org/news/spark-1-6-2-released.html">Apache Spark 1.6.2</a>.</p>
+<ul>
+  <li>The spark <a href="https://github.com/djamelinfo/Tuning-Spark">configuration</a> used for our experiments.</li>
+</ul>
 
 <h2 id="building">Building</h2>
 
-<p>The code is written in Java and We use maven to build it, Use the given <a href="https://djamelinfo.github.io/PDiSAX/pom.xml">pom.xml</a> file to build an executable jar containing all the dependencies.</p>
+<p>The code has been written in Java and we used maven to build it, please use the given <a href="https://github.com/djamelinfo/DPiSAX/blob/master/src/main/pom.xml">pom.xml</a> file to build an executable jar containing all the dependencies.</p>
+
+<h2 id="configuration--usage">Configuration &amp; Usage</h2>
+
+<p>DPiSAX settings can be configured through <a href="https://github.com/djamelinfo/DPiSAX/blob/master/PiSAX.config">configuration file</a>, for more information try :</p>
+
+<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="nv">$SPARK_HOME</span>/bin/spark-submit --class fr.inria.sparkisax.PiSAX  -h
+Usage: PDiSAX <span class="o">[</span>OPTION]...
+
+Options:
+  -f		  Input file
+  -g		  RandomWalk Time Series Generator, you must give number of Time Series and Number of elements <span class="k">in </span>each Time Series.
+  -G		  RandomWalk Query Time Series Generator, you must give number of Time Series and .
+  -o		  Output directory.
+  -q		  Comma-separated list of input query file.
+  -c		  Path to a file from which to load extra properties. If not specified, this will use defaults propertie.
+  --config	  Change given configuration variables, <span class="nv">NAME</span><span class="o">=</span>VALUE <span class="o">(</span>e.g fraction, partitions, normalization, wordLen, timeSeriesLength, threshold, k<span class="o">)</span>
+  -a		  Use 1 <span class="k">for </span>DPiSAX, use 3 <span class="k">for </span>DbasicPiSAX
+  -A		  Use 1 <span class="k">for</span> <span class="o">(</span>DPiSAX and DbasicPiSAX<span class="o">)</span>, use 2 <span class="k">for </span>DiSAX
+  --ls		  Parallel Linear Search
+  -p		  Preprocessing. you must give input file.
+  -h		  Show this <span class="nb">help </span>message and exit.  
+
+Full documentation at: &lt;http://djameledine-yagoubi.info/projects/DPiSAX/&gt;
+
+</code></pre>
+</div>
 
 <h2 id="datasets">Datasets</h2>
 
@@ -42,25 +80,13 @@ distribution N(0,1), then adds the value of the last number to the new
 number.
 You can use <a href="https://github.com/djamelinfo/RandomWalk-TimeSeriesGenerator-On-Spark">Random Walk Time Series Generator</a> to produce a set of randomWalk datasets.</p>
 
-<h2 id="configuration">Configuration</h2>
-
-<p>DPiSAX settings can be configured through <a href="https://djamelinfo.github.io/PDiSAX/Configuration.java">configuration file</a></p>
-
-<h2 id="usage">Usage</h2>
-
-<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="c"># To use DPiSAX class </span>
-
-
-</code></pre>
-</div>
-
 
 
       <footer class="site-footer">
         
-          <span class="site-footer-owner">This page is maintained by <a href="https://github.com/djamelinfo">djamelinfo</a>.</span>
+          <span class="site-footer-owner"><a href="https://github.com/djamelinfo/DPiSAX">DPiSAX</a> is maintained by <a href="https://github.com/djamelinfo">djamelinfo</a>.</span>
         
-        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com/">GitHub Pages</a>.</span>
       </footer>
     </section>
 
