@@ -62,27 +62,27 @@
 
 <p>DPiSAX settings can be configured through <a href="https://github.com/djamelinfo/DPiSAX/blob/master/PiSAX.config">configuration file</a>, for more information try :</p>
 
-<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="nv">$SPARK_HOME/bin/spark-submit --class fr.inria.sparkisax.PiSAX  DP-iSAX-1.jar -h</span>
-Usage: PDiSAX <span class="o">[</span>OPTION]...
+<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="gs">$SPARK_HOME/bin/spark-submit --class fr.inria.sparkisax.PiSAX  DP-iSAX-1.jar -h</span>
+Usage: PDiSAX [OPTION]...
 
 Options:
   -f		  Input file
-  -g		  RandomWalk Time Series Generator, you must give number of Time Series and Number of elements <span class="k">in </span>each Time Series.
-  -G		  RandomWalk Query Time Series Generator, you must give number of Time Series and .
+  -g		  RandomWalk Time Series Generator, you must give number of Time Series and Number of elements in each Time Series.
+  -G		  RandomWalk Query Time Series Generator, you must give number of Time Series.
   -o		  Output directory.
   -q		  Comma-separated list of input query file.
   -c		  Path to a file from which to load extra properties. If not specified, this will use defaults propertie.
-  --config	  Change given configuration variables, <span class="nv">NAME</span><span class="o">=</span>VALUE <span class="o">(</span>e.g fraction, partitions, normalization, wordLen, timeSeriesLength, threshold, k<span class="o">)</span>
-  -a		  Use 1 <span class="k">for </span>DPiSAX, use 3 <span class="k">for </span>DbasicPiSAX
-  -A		  Use 1 <span class="k">for</span> <span class="o">(</span>DPiSAX and DbasicPiSAX<span class="o">)</span>, use 2 <span class="k">for </span>DiSAX
-  --ls		  Parallel Linear Search
+  --config	  Change given configuration variables, NAME=VALUE (e.g fraction, partitions, normalization, wordLen, timeSeriesLength, threshold, k).
+  -a		  Use 1 for DPiSAX, use 3 for DbasicPiSAX.
+  -A		  Use 1 for (DPiSAX and DbasicPiSAX), use 2 for DiSAX.
+  --ls		  Parallel Linear Search.
   -p		  Preprocessing. you must give input file.
   -h		  Show this help message and exit.  
 
-Full documentation at: <span class="nb">&lt;http://djameledine-yagoubi.info/projects/DPiSAX/&gt</span>
-
+Full documentation at: <a href="">&lt;http://djameledine-yagoubi.info/projects/DPiSAX/&gt</a>
 </code></pre>
 </div>
+
 
 <h2 id="datasets">Datasets</h2>
 
@@ -92,6 +92,8 @@ At each time point the generator draws a random number from a Gaussian
 distribution N(0,1), then adds the value of the last number to the new 
 number.
 You can use <a href="https://github.com/djamelinfo/RandomWalk-TimeSeriesGenerator-On-Spark/wiki">Random Walk Time Series Generator</a> to produce a set of randomWalk datasets.</p>
+
+<p>The real world data represents seismic time series collected from the <a href="http://ds.iris.edu/data/access/" >IRIS Seismic Data Access repository</a>.</p>
 
 
 
