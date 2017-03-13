@@ -324,8 +324,7 @@ footer {
 }
 
 .myClass{
-  height: 250px;
-  width: 250px;
+
   border-radius: 4%;
 }
 
@@ -352,7 +351,7 @@ footer {
     width: 16px;
 
     color: #999;
- 
+
 
 fill: currentColor;
 }
@@ -362,8 +361,6 @@ fill: currentColor;
 }
 
 SPAN.li  {
-  display: list-item; 
+  display: list-item;
   margin-left: 2em
 }
-
-
