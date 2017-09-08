@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html class="gr__djamelinfo_github_io" lang="en-us"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title> DPiSAX: Massively Distributed Partitioned iSAX </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link href="PDiSAX_files/css.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="PDiSAX_files/style.css">
+
+<script type="text/javascript">
+            function showError()
+            {
+                alert("The paper associated with this work is currently under review for KDD2017");
+            }
+        </script>
+
+
+
+  </head>
+  <body data-gr-c-s-loaded="true">
+    <section class="page-header">
+
+      <h1 class="project-name">DPiSAX: Massively Distributed Partitioned iSAX</h1>
+      <h2 class="project-tagline"> <a href="http://djameledine-yagoubi.info/" target="_blank" style="color: #ffffff">Djamel Edine Yagoubi</a>, <a href="http://www-sop.inria.fr/members/Reza.Akbarinia/index.html" target="_blank" style="color: #ffffff" >Reza Akbarinia</a>, <a href="http://www.florent-masseglia.info/" target="_blank" style="color: #ffffff">Florent Masseglia</a>, <a href="http://www.mi.parisdescartes.fr/~themisp/" target="_blank" style="color: #ffffff">Themis Palpanas</a></h2>
+      <a href="https://www.inria.fr/" class="project-tagline"><img src="inria.png"  /></a> <a href="http://www.univ-paris5.fr/eng/" class="project-tagline"><img src="par.png" height="95" width="222" /></a><br/>
+
+
+        <a href="" onclick="showError()" value="Signaler une erreur" class="btn">Paper</a>
+        <a href="https://github.com/djamelinfo/DPiSAX" class="btn">Source Code</a>
+        <a href="https://github.com/djamelinfo/DPiSAX/zipball/master" class="btn">Download .zip</a>
+        
+      
+      
+    </section>
+
+    <section class="main-content">
+      
+<h2 id="overview">Overview</h1>
+<p style="text-align:justify;"> Performing similarity queries on billions of time series is a challenge requiring both efficient indexing techniques and parallelization. 
+ This library contains a number of algorithms and optimizations to solve the problem of indexing and querying billions of time series. This page comes with the paper about <em><a href="" onclick="showError()" value="Signaler une erreur">DPiSAX: Massively Distributed Partitioned iSAX</a> </em>. It gives links to the code and documentation of:</p>
+
+<ul>
+  <li>DPiSAX, DbasicPiSAX and DiSAX.</li>
+  <li><a href="https://github.com/djamelinfo/iSAX2-">iSAX2+</a> : Java implementation of iSAX2+ <a href="http://www.mi.parisdescartes.fr/~themisp/isax2plus/">[1]</a>.</li>
+</ul>
+
+<p style="text-align:justify;">You may freely use this code for research purposes, provided that you contact us <a href="mailto:djamel-edine.yagoubi@inria.fr">here</a>.</p>
+
+<h2 id="requirements">Requirements</h2>
+
+<p style="text-align:justify;">Massively Distributed Partitioned iSAX works with <a href="http://spark.apache.org/">Apache Spark</a>. In order to run DPiSAX you must download and install <a href="http://spark.apache.org/news/spark-1-6-2-released.html">Apache Spark 1.6.2</a>.</p>
+<ul>
+  <li>The spark <a href="https://github.com/djamelinfo/Tuning-Spark">configuration</a> used for our experiments.</li>
+</ul>
+
+<h2 id="building">Building</h2>
+
+<p style="text-align:justify;">The code has been written in Java and we used maven to build it, please use the given <a href="https://github.com/djamelinfo/DPiSAX/blob/master/src/main/pom.xml">pom.xml</a> file to build an executable jar containing all the dependencies.</p>
+
+<h2 id="configuration--usage">Configuration &amp; Usage</h2>
+
+<p style="text-align:justify;">DPiSAX settings can be configured through <a href="https://github.com/djamelinfo/DPiSAX/blob/master/PiSAX.config">configuration file</a>, for more information try :</p>
+
+<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="gs">$SPARK_HOME/bin/spark-submit --class fr.inria.sparkisax.PiSAX  DP-iSAX-1.jar -h</span>
+Usage: PDiSAX [OPTION]...
+
+Options:
+  -f		  Input file
+  -g		  RandomWalk Time Series Generator, you must give number of Time Series and Number of elements in each Time Series.
+  -G		  RandomWalk Query Time Series Generator, you must give number of Time Series.
+  -o		  Output directory.
+  -q		  Comma-separated list of input query file.
+  -c		  Path to a file from which to load extra properties. If not specified, this will use defaults propertie.
+  --config	  Change given configuration variables, NAME=VALUE (e.g fraction, partitions, normalization, wordLen, timeSeriesLength, threshold, k).
+  -a		  Use 1 for DPiSAX, use 3 for DbasicPiSAX.
+  -A		  Use 1 for (DPiSAX and DbasicPiSAX), use 2 for DiSAX.
+  --ls		  Parallel Linear Search.
+  -p		  Preprocessing. you must give input file.
+  -h		  Show this help message and exit.  
+
+Full documentation at: <a href="">&lt;http://djameledine-yagoubi.info/projects/DPiSAX/&gt</a>
+</code></pre>
+</div>
+
+
+<h2 id="datasets">Datasets</h2>
+
+<p style="text-align:justify;">We carried out our experiments on synthetic datasets using a random 
+walk data series generator, each data series consisting of 256 points. 
+At each time point the generator draws a random number from a Gaussian 
+distribution N(0,1), then adds the value of the last number to the new 
+number.
+You can use <a href="https://github.com/djamelinfo/RandomWalk-TimeSeriesGenerator-On-Spark/wiki">Random Walk Time Series Generator</a> to produce a set of randomWalk datasets.</p>
+
+<p style="text-align:justify;">The real world data represents seismic time series collected from the <a href="http://ds.iris.edu/data/access/" >IRIS Seismic Data Access repository</a>.</p>
+
+
+
+      <footer class="site-footer">
+
+            
+          <span class="site-footer-credits">The paper associated with this work is currently under review for KDD2017.</span><br/>
+        
+          <span class="site-footer-credits">This page maintained by <a href="http://djameledine-yagoubi.info/" target="_blank" >Djamel Edine Yagoubi</a>.</span>
+        
+         </footer>
+    </section>
+
+    <!-- Start of StatCounter Code for Default Guide -->
+<script type="text/javascript">
+var sc_project=11278522; 
+var sc_invisible=1; 
+var sc_security="b5e0fea3"; 
+var scJsHost = (("https:" == document.location.protocol) ?
+"https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" +
+scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="hit counter"
+href="http://statcounter.com/" target="_blank"><img
+class="statcounter"
+src="//c.statcounter.com/11278522/0/b5e0fea3/1/" alt="hit
+counter"></a></div></noscript>
+<!-- End of StatCounter Code for Default Guide -->
+  
+
+</body>
