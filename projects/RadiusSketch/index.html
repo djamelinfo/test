@@ -6,22 +6,95 @@
     <meta name="description" content="RadiusSketch: Massively Distributed Indexing of Time Series">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="http://parsketch.gforge.inria.fr/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="http://parsketch.gforge.inria.fr/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="http://parsketch.gforge.inria.fr/vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="http://parsketch.gforge.inria.fr/css/stylish-portfolio.min.css" rel="stylesheet">
+
+    <!-- nv CSS -->
+    <link href="http://parsketch.gforge.inria.fr/css/nv.d3.min.css" rel="stylesheet">
+
+
+    <!-- Jquery CSS -->
+    <link href="http://parsketch.gforge.inria.fr/css/jquery-ui.css" rel="stylesheet">
+
+
     <link href="./index_files/css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="./index_files/style.css">
   </head>
   <body>
     <section class="page-header">
-      <h1 class="project-name">RadiusSketch</h1>
-      <h2 class="project-tagline">RadiusSketch: Massively Distributed Indexing of Time Series</h2>
-      
-        <a href="https://github.com/RadiusSketch/RadiusSketch" class="btn">View on GitHub</a>
+      <h1 class="project-name">RadiusSketch: Massively Distributed Indexing of Time Series</h1>
+      <h2 class="project-tagline"></h2>
+
+
+      <a href="https://hal-lirmm.ccsd.cnrs.fr/lirmm-01620154/file/ParSketch__DSAA_.pdf" class="btn">Paper</a>
+      <a href="https://hal-lirmm.ccsd.cnrs.fr/lirmm-01886760/document" class="btn">Demo Paper</a>
+      <a href="http://djameledine-yagoubi.info/projects/RadiusSketch/#Demo" class="btn">Demo</a>
+        <a href="https://github.com/RadiusSketch/RadiusSketch" class="btn">Java Code</a>
+        <a href="https://github.com/lev-a/spark-parsketch/" class="btn">Scala Code</a>
+        
       
       
     </section>
 
     <section class="main-content">
-      <h1 id="f-radiussketch">F-RadiusSketch</h1>
-<p>Fully Parallel Sketches for Time Series Indexing in Massively Distributed Environments.</p>
+      <h1 id="Abstract">Abstract</h1>
+<p style="text-align:justify;">
+  A growing number of domains (finance, seismology, internet-ofthings,
+  etc.) collect massive time series. When the number of series
+  grow to the hundreds of millions or even billions, similarity
+  queries become intractable on a single machine. Further, naive
+  (quadratic) parallelization won’t work well. So, we need both efficient
+  indexing and parallelization. We propose a sketch/random
+  projection-based approach that scales nearly linearly in parallel
+  environments, and provides high quality answers.</p>
+
+
+  <h1 id="Architecture">Architecture</h1>
+  
+  <p style="text-align:justify;">
+  The main components of our approach (<a href="https://hal-lirmm.ccsd.cnrs.fr/lirmm-01620154/file/ParSketch__DSAA_.pdf">RadiusSketch</a>), i.e., Index Construction and Query Processing, are developed within Spark. Spark is deployed on top of Hadoop Distributed File System ( HDFS ) in order to efficiently read input time series, query time series, as well as to store preliminary data and final results, and thus to overcome the bottleneck of centralized data storing.
+
+In <a href="https://github.com/lev-a/spark-parsketch/">Spark-parSketch</a> stores grids (the resulting indexes) to a distributed relational storage ( RDB Store ), setup as a number of PostgreSQL instances. Each Spark worker connects to each of the databases through JDBC and persists the contents of each grid cell as soon as they are identified. This pipelined procedure avoids the in-memory storage of large intermediate datasets, hence relaxes the memory consumption during grid construction, to avoid memory overflow at Spark workers. Moreover, the embedded feature of RDBMS for indexation provides for more efficient query processing.</p>
+
+
+
+  <div class="row ">
+    <div class="col-md-6 text-center mb-6">
+      <div><h3 class="mb-5">Parallel index construction</h3>
+        <p class="lead text-left"> Time-series index construction on the input dataset <b>D</b> within distributed data processing frameworks proceeds as follows:
+          </p><ol class="lead text-left">
+          <li>At the sketch computation stage the dot product of time series  with the random transformation matrix <b>R</b>, where each element is a random variable in <i>{1,-1}</i>,  results in a vector of much lower dimension. At each node, sketch vectors <b>S<sub>D</sub></b> over the input set of time series <b>D</b> are built locally and then partitioned into equal subvectors of given size. Each subvector corresponds to a grid. Thus, each sketch is assigned to a grid cell in each of the grids.
+          </li>
+          <li>At the next stage grouping by grid cell is performed, which requires data shuffling between computation nodes. As a result, each grid cell is mapped to the list of time series identifiers assigned to that cell.
+          </li>
+          <li>We use a set of relational database instances to store the resulting grids <b>G<sub>D</sub></b>, previously created and distributed at the nodes.</li>
+          </ol>
+          <p></p>
+      </div>
+    </div> <!-- col -->
+    <div class="col-md-6 text-center">
+      <div><h3 class="mb-5"> Parallel query processing </h3>
+        <p class="lead text-left">Given a collection of queries <b>Q</b>, in the form of distributed time series dataset, and a previously constructed index on a dataset <b>D</b>, we consider the problem of finding time series that are similar to <b>Q</b> in <b>D</b>. We perform such a search in the following steps:
+        </p><ol class="lead text-left">
+          <li>The sketches of the time series queries <b>Q</b> are computed in parallel <b>S <sub>Q</sub></b>, using the same random matrix <b>R</b>, as for grid construction. The resulting sketches are then partitioned into sub-vectors in parallel. Then the sub-vectors are sent to their appropriate grids and placed in grid cells.
+          </li>
+          <li>Then, the contents of the corresponding grid cells in the index, previously stored as a collection of grids <b>G<sub>D</sub></b>, are retrieved from all the database instances in parallel on each node. Thus, if a sub-vector of a query time series <b>q</b> lands in the same grid cell as a database time series <b>d</b>, then <b>d</b> is a possible match for <b>q</b>. Two time series (a query and an indexed one) are considered to be similar if they are assigned to the same grid cell in a large user-tunable fraction of grids.</li>
+          <li>This requires global communication.</li>
+          <li>Because sketching is approximate,  each candidate match between a query <b>q</b> and data vector <b>d</b> is checked by performing correlations.</li>
+        </ol>
+         <p></p>
+      </div>
+    </div> <!-- col -->
+  </div>
 
 <h2 id="requirements">Requirements</h2>
 <p>F-RadiusSketch works with <a href="http://spark.apache.org/">Apache Spark</a>. In order to run F-RadiusSketch and RadiusSketch you must download and install <a href="http://spark.apache.org/news/spark-1-6-2-released.html">Apache Spark 1.6.2</a></p>
@@ -41,6 +114,66 @@ $SPARK_HOME/bin/spark-submit --class fr.inria.parallelSketchApproach.ParSketch  
 </code></pre>
 </div>
 
+<h2 id="Demo">Demo</h2>
+
+<div class="video-container">
+<iframe src="https://www.youtube.com/embed/pZmnpB1SE-I" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+
+
+<div class="container mb-5">
+  <div class="content-section-heading text-center"><h3 class="mb-2"> Parameters  </h3></div>
+
+   <div class="row mb-4"  >
+     <div class="lead text-center col-md-4" > Input Time Series :
+       <select name="dataset" id="dataset">
+         <option>50 million (50 Gb)</option>
+         <option selected="selected">100 million (100 Gb)</option>
+         <option>300 million (300 Gb)</option>
+         <option>Seismic Data 600 K (3 Gb) </option>
+         <option>Seismic Data 40 M (53 Gb) </option>
+       </select>
+     </div>
+     <div class="lead text-center col-md-4" >  Batch Size (number of queries) :
+       <!--Number of candidates (5 increments): <b> <span class="cand-value">10</span></b>-->
+       <select name="queries" id="queries">
+         <option>1 </option>
+         <option>10</option>
+         <option selected="selected">100</option>
+         <!--   <option>1000</option>-->
+       </select>
+     </div>
+     <div class=" lead text-center col-md-4" > Cell Size<sup>1</sup> :
+       <select name="cell" id="cell">
+         <option>2</option>
+         <option selected="selected">4</option>
+         <option>8</option>
+       </select>
+     </div>
+   </div>
+
+
+   <div class="row "  >
+     <div class="col-md-4" >
+       <div class="content-section-heading text-center"><h3 class="mb-2"> Response Time  </h3></div>
+
+       <div id="perf" style="width:100%; height: 600px;"></div>
+       <p class="lead text-center mt-4">Quality Ratio<sup>2</sup>: <b> <span class="dataset-value">N/A</span> </b></p>
+     </div> <!-- col -->
+     <div class="col-md-8" >
+       <div class="content-section-heading text-center"><h3 class=" mb-2"> <b> Precision  </b></h3></div>
+
+
+       <div><p class="lead text-center"> <b> Parallel Linear Search </b></p></div>
+     <div id="chart-pls" style="width:100%; height: 300px;" ></div>
+       <div><p class="lead text-center mt-4"> <b>spark-parSketch</b> </p></div>
+
+       <div id="chart-sketch" style="width:100%; height: 300px;" ></div>
+       <p class="lead text-center"> Query # :
+         <b> <span class="query-value">0</span> </b></p>
+     </div> <!-- col -->
+   </div> <!-- row -->
+ </div> 
+
 
 
       <footer class="site-footer">
@@ -51,7 +184,36 @@ $SPARK_HOME/bin/spark-submit --class fr.inria.parallelSketchApproach.ParSketch  
       </footer>
     </section>
 
-    
+    <!-- Bootstrap core JavaScript -->
+    <script src="http://parsketch.gforge.inria.fr/vendor/jquery/jquery.min.js"></script>
+    <script src="http://parsketch.gforge.inria.fr/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="http://parsketch.gforge.inria.fr/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="http://parsketch.gforge.inria.fr/js/stylish-portfolio.min.js"></script>
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" charset="utf-8"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.6/nv.d3.min.js'></script>
+    <!--<script src="js/d3.min.js"></script>-->
+    <!--<script src="js/nv.d3.min.js"></script>-->
+
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://parsketch.gforge.inria.fr/js/jquery-1.10.2.js"></script>
+    <script src="http://parsketch.gforge.inria.fr/js/jquery-ui.js"></script>
+
+
+
+    <script src="http://parsketch.gforge.inria.fr/js/display-charts.js"></script>
+
   
 
 </body></html>
