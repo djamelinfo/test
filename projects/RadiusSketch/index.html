@@ -67,11 +67,10 @@ In <a href="https://github.com/lev-a/spark-parsketch/">Spark-parSketch</a> store
 
 
 
-  <div class="row ">
-    <div class="col-md-6 text-center mb-6">
-      <div><h3 class="mb-5">Parallel index construction</h3>
-        <p class="lead text-left"> Time-series index construction on the input dataset <b>D</b> within distributed data processing frameworks proceeds as follows:
-          </p><ol class="lead text-left">
+  <h1>Parallel index construction</h1>
+
+        <p style="text-align:justify;"> Time-series index construction on the input dataset <b>D</b> within distributed data processing frameworks proceeds as follows:
+          </p><ol >
           <li>At the sketch computation stage the dot product of time series  with the random transformation matrix <b>R</b>, where each element is a random variable in <i>{1,-1}</i>,  results in a vector of much lower dimension. At each node, sketch vectors <b>S<sub>D</sub></b> over the input set of time series <b>D</b> are built locally and then partitioned into equal subvectors of given size. Each subvector corresponds to a grid. Thus, each sketch is assigned to a grid cell in each of the grids.
           </li>
           <li>At the next stage grouping by grid cell is performed, which requires data shuffling between computation nodes. As a result, each grid cell is mapped to the list of time series identifiers assigned to that cell.
@@ -79,12 +78,9 @@ In <a href="https://github.com/lev-a/spark-parsketch/">Spark-parSketch</a> store
           <li>We use a set of relational database instances to store the resulting grids <b>G<sub>D</sub></b>, previously created and distributed at the nodes.</li>
           </ol>
           <p></p>
-      </div>
-    </div> <!-- col -->
-    <div class="col-md-6 text-center">
-      <div><h3 class="mb-5"> Parallel query processing </h3>
-        <p class="lead text-left">Given a collection of queries <b>Q</b>, in the form of distributed time series dataset, and a previously constructed index on a dataset <b>D</b>, we consider the problem of finding time series that are similar to <b>Q</b> in <b>D</b>. We perform such a search in the following steps:
-        </p><ol class="lead text-left">
+      <h1> Parallel query processing </h1>
+        <p style="text-align:justify;">Given a collection of queries <b>Q</b>, in the form of distributed time series dataset, and a previously constructed index on a dataset <b>D</b>, we consider the problem of finding time series that are similar to <b>Q</b> in <b>D</b>. We perform such a search in the following steps:
+        </p><ol >
           <li>The sketches of the time series queries <b>Q</b> are computed in parallel <b>S <sub>Q</sub></b>, using the same random matrix <b>R</b>, as for grid construction. The resulting sketches are then partitioned into sub-vectors in parallel. Then the sub-vectors are sent to their appropriate grids and placed in grid cells.
           </li>
           <li>Then, the contents of the corresponding grid cells in the index, previously stored as a collection of grids <b>G<sub>D</sub></b>, are retrieved from all the database instances in parallel on each node. Thus, if a sub-vector of a query time series <b>q</b> lands in the same grid cell as a database time series <b>d</b>, then <b>d</b> is a possible match for <b>q</b>. Two time series (a query and an indexed one) are considered to be similar if they are assigned to the same grid cell in a large user-tunable fraction of grids.</li>
@@ -92,32 +88,33 @@ In <a href="https://github.com/lev-a/spark-parsketch/">Spark-parSketch</a> store
           <li>Because sketching is approximate,  each candidate match between a query <b>q</b> and data vector <b>d</b> is checked by performing correlations.</li>
         </ol>
          <p></p>
-      </div>
-    </div> <!-- col -->
-  </div>
+    
+<h1 id="Demo">Demo</h1>
 
-<h2 id="requirements">Requirements</h2>
-<p>F-RadiusSketch works with <a href="http://spark.apache.org/">Apache Spark</a>. In order to run F-RadiusSketch and RadiusSketch you must download and install <a href="http://spark.apache.org/news/spark-1-6-2-released.html">Apache Spark 1.6.2</a></p>
-
-<h2 id="building">Building</h2>
-
-<p>The code is written in Java and We use maven to build it, Use the given <a href="https://radiussketch.github.io/RadiusSketch/pom.xml">pom.xml</a> file to build an executable jar containing all the dependencies.
- Usage</p>
-
-<hr>
-
-<div class="highlighter-rouge"><pre class="highlight"><code> for F-ParSketch use FParSketch class :
-$SPARK_HOME/bin/spark-submit --class fr.inria.parallelSketchApproach.FParSketch  --master $MASTER ParallelSketchApproach-0.jar  &lt;inputDataSetFile&gt; &lt;inputQueryFile&gt; &lt;outputFiles&gt; [&lt;configFile&gt;]
-   
- for ParSketch use ParSketch class :
-$SPARK_HOME/bin/spark-submit --class fr.inria.parallelSketchApproach.ParSketch  --master $MASTER ParallelSketchApproach-0.jar  &lt;inputDataSetFile&gt; &lt;inputQueryFile&gt; &lt;outputFiles&gt; [&lt;configFile&gt;]
-</code></pre>
-</div>
-
-<h2 id="Demo">Demo</h2>
+<p  style="text-align:justify;">The video of demonstration use-case :</p>
 
 <div class="video-container">
-<iframe src="https://www.youtube.com/embed/pZmnpB1SE-I" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+  <iframe src="https://www.youtube.com/embed/pZmnpB1SE-I" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+
+  <h2>Demonstration Scenarios</h2>
+
+<h3>Use Case #1: Synthetic datasets </h3>
+
+
+  <p  style="text-align:justify;">In this use-case, each object of dataset is identified with an ID and consist of 256 values. At each time point, a random walk generator draws a random number from a Gaussian distribution N(0,1), then adds the value of the last number to the new number. The number of time series varies from 50 million to 300 million depending on the experiment.</p>
+
+
+
+
+  <h3>Use Case #2: Seismic datasets </h3>
+
+    <p  style="text-align:justify;">In this use-case, the real world data represents seismic time series collected from the  <a href="http://ds.iris.edu/data/access/"> IRIS Seismic Data Access repository </a> at various earthquake zones. After preprocessing we've achieved two seismic datasets: the first one contains 600 thousand time series of 462 values and the second one  - 40 million time series of 200 values each.</p>
+
+
+
+  <p  style="text-align:justify;"> We show below set of charts to demonstrate the RadiusSketch performance (vs. parallelized Linear Search algorithm), in terms of response time and precision. Bar chart compares time performance of two approaches. Two line charts depict the precision of similarity search as top candidates (up to 10) for selected query in a given dataset.      </p>
+  <p  style="text-align:justify;"> <b>Parameters: </b>The user can observe the tool performance on a range of input datasets (<b> Input Time Series </b>), alongside with various scale of query dataset (<b> Queries Number </b>). To proceed throught separate Query in the selected Dataset user may use the bottom slide bar (<b> Query # </b>).</p>
+  <p  style="text-align:justify;">The combo box <b> Cell size </b> demonstrate how some parameters of RadiusSketch tool, related to the sketch-based algorithm, could impact the precision accuracy. </p></div>
 
 
 <div class="container mb-5">
@@ -174,13 +171,18 @@ $SPARK_HOME/bin/spark-submit --class fr.inria.parallelSketchApproach.ParSketch  
    </div> <!-- row -->
  </div> 
 
+ <p> <i> <sup>1</sup> the parameter not affects the PLS precision chart   </i> </p>
+            <p> <i> <sup>2</sup> ratio between the 10th highest correlation of the time series found by sketches to the 10th
+              highest correlation found by parallel linear search </i> </p>
+            <p> <i> Experiments were conducted on a cluster  <a href="http://www.grid5000.fr/"> http://www.grid5000.fr </a> of 16 compute nodes with two 8 cores Intel Xeon E5-2630 v3 CPUs, 128 GB RAM, 2x558GB capacity storage per node. The cluster is running under Hadoop version 2.7, Spark v. 2.1 and PostgreSQL v. 9.4 as a relational database system.</i> </p>
+            <p> <i> * Experimental runs with PLS on a larger datasets couldn't be finished due big time consuming, thus lack of cluster reservation time to conclude similarity search. </i> </p>
+
+
 
 
       <footer class="site-footer">
         
-          <span class="site-footer-owner"><a href="https://github.com/RadiusSketch/RadiusSketch">RadiusSketch</a> is maintained by <a href="https://github.com/RadiusSketch">RadiusSketch</a>.</span>
-        
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com/">GitHub Pages</a>.</span>
+        <p style="text-align:right;" ><small> © 2018 Djamel Edine YAGOUBI <a href="http://creativecommons.org/licenses/by/3.0/">Some Rights Reserved</a>.</small></p>
       </footer>
     </section>
 
